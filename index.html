@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry</title>
+    <style>
+        /* 予約・退会フォームと完全に統一 */
+        body { font-family: -apple-system, sans-serif; padding: 20px; background-color: #f4f4f4; color: #333; line-height: 1.6; }
+        .container { background: #fff; padding: 25px 20px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        
+        /* タイトルのみセンター、他はすべて左詰め */
+        h2 { font-size: 18px; text-align: center; color: #00b900; border-bottom: 3px solid #00b900; padding-bottom: 12px; margin-bottom: 25px; margin-top: 0; }
+        
+        .form-group { margin-bottom: 18px; text-align: left; }
+        label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 14px; text-align: left; }
+        
+        input, select, textarea { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px; background-color: #fafafa; 
+            text-align: left; /* 入力文字も左詰め */
+        }
+        
+        textarea { height: 150px; resize: none; }
+        
+        .note { font-size: 11px; color: #888; margin-top: 5px; display: block; text-align: left; }
+        
+        .btn { background-color: #00b900; color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:disabled { background-color: #ccc !important; cursor: not-allowed; opacity: 0.6; }
+        
+        .footer-text { font-size: 12px; text-align: center; margin-top: 20px; color: #888; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>【お問合せ】</h2>
+    
+    <div class="form-group">
+        <label>① 店舗名</label>
+        <select id="shop" onchange="validateForm()">
+            <option value="">店舗を選択してください</option>
+            <option>飯田店</option><option>有玉店</option><option>葵東店</option>
+            <option>中条店</option><option>平口店</option><option>竜洋店</option>
+            <option>その他</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>② お名前</label>
+        <input type="text" id="name" placeholder="氏名を入力" oninput="validateForm()">
+    </div>
+
+    <div class="form-group">
+        <label>③ 会員番号</label>
+        <input type="text" id="memberId" placeholder="会員番号を入力" oninput="validateForm()">
+        <span class="note">※不明な場合や非会員の方は「なし」と入力してください。</span>
+    </div>
+
+    <div class="form-group">
+        <label>④ お問合せの種類</label>
+        <select id="type" onchange="validateForm()">
+            <option value="">項目を選択してください</option>
+            <option>忘れ物について</option>
+            <option>設備・清掃のご要望</option>
+            <option>入退会・諸手続きの相談</option>
+            <option>苦情・トラブル報告</option>
+            <option>その他</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>⑤ 内容</label>
+        <textarea id="content" placeholder="詳細をご記入ください" oninput="validateForm()"></textarea>
+    </div>
+    
+    <button id="submitBtn" class="btn" onclick="sendData()" disabled>内容を送信する</button>
+
+    <div class="footer-text">
+        内容を確認次第、スタッフより順次回答いたします。<br>
+        ※回答にお時間をいただく場合がございます。
+    </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+    // 問い合わせ用の新しいLIFF IDをセットしてください
+    const LIFF_ID = "ここに新しいLIFF-IDを入力"; 
+
+    liff.init({ liffId: LIFF_ID }).then(() => {
+        if (!liff.isLoggedIn()) { liff.login(); }
+        validateForm(); 
+    }).catch((err) => { console.error(err); });
+
+    function validateForm() {
+        const shop = document.getElementById('shop').value;
+        const name = document.getElementById('name').value.trim();
+        const memberId = document.getElementById('memberId').value.trim();
+        const type = document.getElementById('type').value;
+        const content = document.getElementById('content').value.trim();
+        
+        const btn = document.getElementById('submitBtn');
+
+        // すべての必須項目が入力されたらボタンを有効化
+        btn.disabled = !(shop && name && memberId && type && content);
+    }
+
+    function sendData() {
+        const msg = "【AXIS-INQUIRY】\n" +
+            "■種類：" + document.getElementById('type').value + "\n" +
+            "■店舗：" + document.getElementById('shop').value + "\n" +
+            "■名前：" + document.getElementById('name').value + "様\n" +
+            "■番号：" + document.getElementById('memberId').value + "\n" +
+            "--------------------\n" +
+            "■内容：\n" + document.getElementById('content').value;
+
+        liff.sendMessages([{ type: 'text', text: msg }]).then(() => {
+            liff.closeWindow();
+        }).catch((err) => { alert("送信失敗：LINEアプリから操作してください。"); });
+    }
+</script>
+</body>
+</html>
