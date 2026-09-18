@@ -74,7 +74,8 @@
         <textarea id="content" placeholder="詳細をご記入ください" oninput="validateForm()"></textarea>
     </div>
     
-    <button id="submitBtn" class="btn" onclick="sendData()" disabled>内容を送信する</button>
+    <button id="submitBtn" class="btn" onclick="sendData()" disabled>LINEで内容を確認する</button>
+    <p style="font-size: 13px; text-align: center;">LINEのトーク画面が開きます。内容を確認し、LINE側の「送信」を押してください。</p>
 
     <div class="footer-text">
         内容を確認次第、スタッフより順次回答いたします。<br>
@@ -82,15 +83,10 @@
     </div>
 </div>
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
-    // 問い合わせ用の新しいLIFF IDをセットしてください
-    const LIFF_ID = "2009898612-Ur8HyS7F"; 
+    const LINE_OFFICIAL_ID = "@opv5792p";
 
-    liff.init({ liffId: LIFF_ID }).then(() => {
-        if (!liff.isLoggedIn()) { liff.login(); }
-        validateForm(); 
-    }).catch((err) => { console.error(err); });
+    validateForm();
 
     function validateForm() {
         const shop = document.getElementById('shop').value;
@@ -114,9 +110,7 @@
             "--------------------\n" +
             "■内容：\n" + document.getElementById('content').value;
 
-        liff.sendMessages([{ type: 'text', text: msg }]).then(() => {
-            liff.closeWindow();
-        }).catch((err) => { alert("送信失敗：LINEアプリから操作してください。"); });
+        window.location.href = "https://line.me/R/oaMessage/" + encodeURIComponent(LINE_OFFICIAL_ID) + "/?" + encodeURIComponent(msg);
     }
 </script>
 </body>
