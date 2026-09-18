@@ -28,7 +28,7 @@
         .btn { background-color: #00b900; color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn:disabled { background-color: #ccc !important; cursor: not-allowed; opacity: 0.6; }
         
-        .footer-text { font-size: 12px; text-align: center; margin-top: 20px; color: #888; }
+        .footer-text { font-size: 12px; text-align: center; margin-top: 20px; color: #000; }
     </style>
 </head>
 <body>
@@ -74,8 +74,7 @@
         <textarea id="content" placeholder="詳細をご記入ください" oninput="validateForm()"></textarea>
     </div>
     
-    <button id="submitBtn" class="btn" onclick="sendData()" disabled>LINEで内容を確認する</button>
-    <p style="font-size: 13px; text-align: center;">LINEのトーク画面が開きます。内容を確認し、LINE側の「送信」を押してください。</p>
+    <button id="submitBtn" class="btn" onclick="sendData()" disabled>送信する</button>
 
     <div class="footer-text">
         内容を確認次第、スタッフより順次回答いたします。<br>
